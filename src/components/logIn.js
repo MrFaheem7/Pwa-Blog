@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { initializeApp, } from 'firebase/app';
 import { firebaseConfig } from './firebase';
-import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, signInWithRedirect, signInWithPhoneNumber, RecaptchaVerifier } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, signInWithRedirect, signInWithPhoneNumber, RecaptchaVerifier, signOut, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 const LogIn = () => {
     const navigate = useNavigate()
@@ -12,15 +12,29 @@ const LogIn = () => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [phone, setPhone]=useState('')
-    const sendOtp=()=>{
-        const appverifier=new RecaptchaVerifier(auth,'abc',{});
-        signInWithPhoneNumber(auth,phone,appverifier).then((res)=>{
-            console.log(res,'res')
+    const [phone, setPhone] = useState('')
+    const [otp, setOtp] = useState('')
+    const [state,setState]=useState(false)
+    const sendOtp = () => {
+        const appverifier = new RecaptchaVerifier(auth, 'abc', {'size': 'invisible',});
+        signInWithPhoneNumber(auth, phone, appverifier).then((res) => {
+            window.confirmationResult = res;
+            console.log(res, 'res')
+            setState(true)
 
-        }).catch((err)=>{
-            console.log(err,'err')
+        }).catch((err) => {
+            console.log(err, 'err')
         })
+    }
+    const confirmOtp = () => {
+        window.confirmationResult.confirm(otp).then((res) => {
+            console.log("responseee", res)
+            navigate('/home')
+
+        }).catch((err) => {
+            console.log("errrr", err)
+        })
+
     }
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -63,7 +77,18 @@ const LogIn = () => {
 
 
     }
-
+    const logout=()=>{
+        signOut(auth).then((res)=>{
+            console.log(res,'res')
+            navigate("/")
+        })
+    }
+    useEffect(()=>{
+        const unsubcribe=onAuthStateChanged(auth,(user)=>{
+            user? (console.log('islogin')):(console.log('notLogin'))
+        })
+        return ()=>unsubcribe();
+    },[])
     return (
 
 
@@ -106,21 +131,31 @@ const LogIn = () => {
                     </form>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: "100%" }}>
 
-                   
-                     <div>
+
+                        <div>
                             <input
-                                
-                               
+
+
                                 onChange={(e) => {
                                     setPhone(e.target.value);
                                 }}
-                                placeholder="Enter your Password"
+                                placeholder="Enter your Phone Number"
                             />
                         </div>
                         <div id="abc"></div>
                         <div>      <button type="button" onClick={sendOtp}>Send Otp</button>
                         </div>
-                        </div>
+                        { state&&(<div>
+                            <input
+                                onChange={(e) => {
+                                    setOtp(e.target.value);
+                                }}
+                                placeholder="Enter your Phone Number"
+                            />
+                        <button type="button" onClick={confirmOtp}>Confirm Otp</button>
+                        </div>)}
+                        <div><button onClick={logout}>LogOut</button></div>
+                    </div>
                 </div>
             </div>
         </div >

@@ -1,5 +1,5 @@
 import { Container, Nav, Navbar } from 'react-bootstrap';
-import { Link, Outlet, Route, Routes } from 'react-router-dom';
+import { Link, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css'
 import * as React from 'react'
 import { useState, useEffect } from 'react';
@@ -13,9 +13,25 @@ import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 import LogIn from './components/logIn';
 import NavBar from './NavBar';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from './components/firebase';
 
 
 function App() {
+  const app = initializeApp(firebaseConfig);
+  const [route,setRoute]=useState(false)
+  const navigate=useNavigate()
+  useEffect(()=>{
+  const auth = getAuth(app);
+  
+    const unsubcribe=onAuthStateChanged(auth,(user)=>{
+        user? (console.log('islogin')):(console.log('notLogin'))
+        user?(setRoute(true)):setRoute(false)
+        user? navigate('/home'):navigate('/login')
+    })
+    return ()=>unsubcribe();
+},[])
   const [user, setUser] = useState('')
   useEffect(() => {
 
@@ -47,12 +63,12 @@ function App() {
       <Routes>
         <Route path='/' element={<SignUp />} />
         <Route element={<LogIn />} path='/login' />
-        <Route element={<NavBar />} >
+       {route&& <Route  element={<NavBar />} >
           <Route index element={<Home />} path='/home' />
           <Route element={<Users />} path='/users' />
           <Route element={<About />} path='/about' />
         </Route>
-
+}
       </Routes>
     </div >
   );
