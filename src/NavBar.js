@@ -1,10 +1,11 @@
 import React from 'react'
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { Link, Outlet, } from 'react-router-dom';
+import LogoutButton from './components/LogoutButton';
 const NavBar = () => {
     return (
         <div>
-            <Navbar bg="primary" expand="lg" variant="dark">
+            <Navbar bg="dark" expand="lg" variant="dark">
                 <Container>
                     <Navbar.Brand><Link to='/home'>NavBar</Link></Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbar-nav" />
@@ -14,6 +15,7 @@ const NavBar = () => {
                             <Nav.Link><Link to='/users'>Users</Link></Nav.Link>
                             <Nav.Link><Link to='/about'>About</Link></Nav.Link>
                         </Nav>
+                        <LogoutButton style={{ }} name={'LogOut'}/>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
