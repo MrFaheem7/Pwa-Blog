@@ -36,8 +36,8 @@ function App() {
     }
   }
   Object.session.outerArray.forEach((array) => {
-    array.checkMe.innerArray.forEach((arr)=>{
-      arr.updateMe="Updateddddd"
+    array.checkMe.innerArray.forEach((arr) => {
+      arr.updateMe = "Updateddddd"
     })
   })
 
@@ -51,7 +51,6 @@ function App() {
       }
     });
   }
-
 
   return (
     <div className="App">

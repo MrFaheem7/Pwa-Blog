@@ -3,6 +3,7 @@ import { initializeApp, } from 'firebase/app';
 import { firebaseConfig } from './firebase';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, signInWithRedirect, signInWithPhoneNumber, RecaptchaVerifier, signOut, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import LogoutButton from './LogoutButton';
 const LogIn = () => {
     const navigate = useNavigate()
     const app = initializeApp(firebaseConfig);
@@ -14,9 +15,9 @@ const LogIn = () => {
     const [password, setPassword] = useState('')
     const [phone, setPhone] = useState('')
     const [otp, setOtp] = useState('')
-    const [state,setState]=useState(false)
+    const [state, setState] = useState(false)
     const sendOtp = () => {
-        const appverifier = new RecaptchaVerifier(auth, 'abc', {'size': 'invisible',});
+        const appverifier = new RecaptchaVerifier(auth, 'abc', { 'size': 'invisible', });
         signInWithPhoneNumber(auth, phone, appverifier).then((res) => {
             window.confirmationResult = res;
             console.log(res, 'res')
@@ -77,18 +78,13 @@ const LogIn = () => {
 
 
     }
-    const logout=()=>{
-        signOut(auth).then((res)=>{
-            console.log(res,'res')
-            navigate("/")
+
+    useEffect(() => {
+        const unsubcribe = onAuthStateChanged(auth, (user) => {
+            user ? (console.log('islogin')) : (console.log('notLogin'))
         })
-    }
-    useEffect(()=>{
-        const unsubcribe=onAuthStateChanged(auth,(user)=>{
-            user? (console.log('islogin')):(console.log('notLogin'))
-        })
-        return ()=>unsubcribe();
-    },[])
+        return () => unsubcribe();
+    }, [])
     return (
 
 
@@ -145,16 +141,16 @@ const LogIn = () => {
                         <div id="abc"></div>
                         <div>      <button type="button" onClick={sendOtp}>Send Otp</button>
                         </div>
-                        { state&&(<div>
+                        {state && (<div>
                             <input
                                 onChange={(e) => {
                                     setOtp(e.target.value);
                                 }}
                                 placeholder="Enter your Phone Number"
                             />
-                        <button type="button" onClick={confirmOtp}>Confirm Otp</button>
+                            <button type="button" onClick={confirmOtp}>Confirm Otp</button>
                         </div>)}
-                        <div><button onClick={logout}>LogOut</button></div>
+                        <div><LogoutButton name='LogOut' /></div>
                     </div>
                 </div>
             </div>

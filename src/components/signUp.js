@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./firebase";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const SignUp = () => {
     const navigate = useNavigate();
     const app = initializeApp(firebaseConfig);
@@ -49,7 +49,7 @@ const SignUp = () => {
                         </div>
                         <div>      <button type="submit">SignUp</button>
                         </div>
-
+                        <h6><Link to='/login'>Already have an Account??</Link></h6>
                     </form>
                 </div>
             </div>
