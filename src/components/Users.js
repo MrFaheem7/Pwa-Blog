@@ -9,6 +9,7 @@ import Modaal from './Modal';
 
 const Users = () => {
     const [data, setData] = useState([])
+    
 
     let url = 'https://jsonplaceholder.typicode.com/users';
     const getUser = () => {
@@ -16,8 +17,21 @@ const Users = () => {
             .then((response) => {
 
                 console.log(response);
-                setData(response.data);
+                const result=response.data
+                // const obj1=[...result,{
+                //     id:11,
+                //     name:'values.name',
+                //     email:"values.email",
+                //     address:{city:"values.city"},
+                //     phone:"values.phoneNumber",
+                //     username:"values.userName",
+                //     website:"values.website"
+                // }]
+                
+                setData(result)
+            
             })
+            
             .catch((error) => {
                 console.error(error, "err");
             })
@@ -25,13 +39,13 @@ const Users = () => {
     useEffect(() => {
         getUser();
     }, []);
-    console.log('ghfhgh')
+  
     return (
         <>
 
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Container  >
+                <Container   >
                     <Row>
 
                         <h1>DATA TABLE</h1>
@@ -39,7 +53,7 @@ const Users = () => {
 
 
                     <Row>
-                        <Table style={{ textAlign: 'inherit', fontSize: 10 }} striped bordered hover>
+                        <Table style={{ textAlign: 'inherit', fontSize: 10, }} striped bordered hover>
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -49,7 +63,7 @@ const Users = () => {
                                     <th>Phone Number</th>
                                     <th>Username</th>
                                     <th>Website</th>
-                                    <th><Modaal /></th>
+                                    <th><Modaal setData={setData} data={data}  /></th>
 
                                 </tr>
                             </thead>
@@ -65,9 +79,21 @@ const Users = () => {
                                             <td>{item.username}</td>
                                             <td>{item.website}</td>
 
-                                            <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
-                                            </svg></td>
+                                            <td><div class="dropdown ms-auto">
+                            <i class="fas fa-ellipsis-vertical" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                            <ul class="dropdown-menu">
+                              <li>
+                                <span class="dropdown-item">
+                                  <i class="fas fa-pen mx-2"></i> Update
+                                </span>
+                              </li>
+                              <li>
+                                <span class="dropdown-item">
+                                    <i class="fas fa-trash mx-2"></i> Delete
+                                </span>
+                              </li>
+                            </ul>
+                        </div></td>
                                         </tr>
                                     ))
                                 }
